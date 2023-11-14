@@ -6,4 +6,5 @@ declare module '*.vue' {
 }  
 
 declare module '@/config/templatesConfig.js'
+declare module '@/config/propertyRegister.js'
 declare module '@/utils/util.js'

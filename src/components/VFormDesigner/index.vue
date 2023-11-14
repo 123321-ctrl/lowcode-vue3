@@ -33,20 +33,28 @@
 
       <!-- 中间工作台部分 -->
       <el-container>
-        <el-header> </el-header>
+        <el-header>cnenter-header </el-header>
         <el-main>
           <el-scrollbar :style="{ height: scrollerHeight }">
-            <VFormWidget></VFormWidget>
+            <VFormWidget :designer="designer"></VFormWidget>
           </el-scrollbar>
         </el-main>
       </el-container>
+
+      <el-aside>
+        <SettingPanel
+          :designer="designer"
+          :selected-widget="designer.selectedWidget"
+        ></SettingPanel>
+      </el-aside>
     </el-container>
   </el-container>
 </template>
 
 <script setup lang="ts">
 import widgetPanel from "./widget-panel/index.vue";
-import VFormWidget from './form-widget/index.vue'
+import VFormWidget from "./form-widget/index.vue";
+import SettingPanel from "./setting-panel/index.vue";
 import { addWindowResizeHandler } from "@/utils/util.js";
 import { ref, provide, onMounted, nextTick } from "vue";
 
@@ -58,7 +66,48 @@ const prop = defineProps({
   },
 });
 
-const designer = ref(null);
+const designer = ref({
+  widgetList: [],
+  selectedWidget: null,
+  setSelected: setSelected,
+  hasConfig: hasConfig,
+});
+const selectedId = ref(null);
+const selectedWidgetName = ref(null); //选中组件名称（唯一）
+
+function setSelected(selected: any) {
+  if (!selected) {
+    clearSelected();
+    return;
+  }
+
+  designer.value.selectedWidget = selected;
+  if (!!selected.id) {
+    selectedId.value = selected.id;
+    selectedWidgetName.value = selected.options.name;
+  }
+}
+
+function clearSelected() {
+  selectedId.value = null;
+  selectedWidgetName.value = null;
+  designer.value.selectedWidget = null; //this.selectedWidget = null
+}
+
+function hasConfig(widget: any, configName: any) {
+  // let originalWidget = null;
+  // if (!!widget.category) {
+  //   originalWidget = this.getContainerByType(widget.type);
+  // } else {
+  //   originalWidget = this.getFieldWidgetByType(widget.type);
+  // }
+
+  // if (!originalWidget || !originalWidget.options) {
+  //   return false;
+  // }
+
+  return Object.keys(widget.options).indexOf(configName) > -1;
+}
 
 const scrollerHeight = ref("0px");
 onMounted(() => {

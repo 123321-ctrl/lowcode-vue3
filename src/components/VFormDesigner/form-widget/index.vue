@@ -1,29 +1,44 @@
 <template>
-  <div class="form-widget-list">
-    <draggable
-      v-model="componentList"
-      item-key="id"
-      :group="{ name: 'dragGroup' }"
-      tag="transition-group"
-      :component-data="{ name: 'fade' }"
-    >
-      <template #item="{ element }">
-        <div>{{ element.type }}</div>
-      </template>
-    </draggable>
-  </div>
+  <el-form>
+    <div class="form-widget-list">
+      <draggable
+        :list="designer.widgetList"
+        item-key="id"
+        :group="{ name: 'dragGroup' }"
+        tag="transition-group"
+        :component-data="{ name: 'fade' }"
+      >
+        <template #item="{ element: widget }">
+          <div>
+            <template v-if="'container' === widget.category">
+              <component :is="getWidgetName(widget)"></component>
+            </template>
+            <template v-else>
+              <FormItemWrapper
+                :widgetName="getWidgetName(widget)"
+                :field="widget"
+                :designer="designer"
+              ></FormItemWrapper>
+              <!-- <component :is="getWidgetName(widget)"></component> -->
+            </template>
+          </div>
+        </template>
+      </draggable>
+    </div>
+  </el-form>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+// import { ref } from "vue";
+import FormItemWrapper from "./field-widget/form-item-wrapper.vue";
 
-// const prop = defineProps({
-//   designer: {
-//     type: Object,
-//   },
-// });
+defineProps(['designer']);
 
-const componentList = ref([]);
+// const componentList = ref([]);
+
+function getWidgetName(widget: any) {
+  return widget.type + "-widget";
+}
 </script>
 
 <style scoped lang="scss">

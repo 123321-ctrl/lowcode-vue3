@@ -104,7 +104,7 @@ export const containers = [
       formItemFlag: true,
       options: {
         name: '',
-        label: '',
+        label: 'input',
         labelAlign: '',
         type: 'text',
         defaultValue: '',
