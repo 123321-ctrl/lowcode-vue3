@@ -13,29 +13,72 @@
         <el-input type="text" v-model="optionModel.label"></el-input>
       </el-form-item>
     </template>
-    <template v-if="propName === 'labelAlign'">
-      <el-form-item prop="labelAlign" label="字段标签对齐">
-        <el-radio-group
-          v-model="optionModel.labelAlign"
-          class="radio-group-custom"
-        >
-          <el-radio-button label="label-left-align">居左</el-radio-button>
-          <el-radio-button label="label-center-align">居中</el-radio-button>
-          <el-radio-button label="label-right-align">居右</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-    </template>
     <template v-if="propName === 'type'">
       <el-form-item prop="type" label="显示类型">
-        <el-select v-model="optionModel.type">
-          <el-option label="text" value="text"></el-option>
-          <el-option label="password" value="password"></el-option>
-        </el-select>
+        <template v-if="(selectedWidget as selectedType).type === 'date'">
+          <el-select v-model="optionModel.type">
+            <el-option label="datetime" value="datetime"></el-option>
+            <el-option label="date" value="date"></el-option>
+            <el-option label="dates" value="dates"></el-option>
+            <el-option label="year" value="year"></el-option>
+            <el-option label="month" value="month"></el-option>
+            <el-option label="week" value="week"></el-option>
+          </el-select>
+        </template>
+        <template
+          v-else-if="(selectedWidget as selectedType).type === 'date-range'"
+        >
+          <el-select v-model="optionModel.type">
+            <el-option label="daterange" value="daterange"></el-option>
+            <el-option label="datetimerange" value="datetimerange"></el-option>
+            <el-option label="monthrange" value="monthrange"></el-option>
+          </el-select>
+        </template>
+        <template v-else>
+          <el-select v-model="optionModel.type">
+            <el-option label="text" value="text"></el-option>
+            <el-option label="password" value="password"></el-option>
+          </el-select>
+        </template>
       </el-form-item>
     </template>
     <template v-if="propName === 'defaultValue'">
       <el-form-item prop="defaultValue" label="默认值">
-        <el-input type="text" v-model="optionModel.defaultValue"></el-input>
+        <template v-if="(selectedWidget as selectedType).type === 'switch'">
+          <el-switch
+            v-model="optionModel.defaultValue"
+            active-text="true"
+            inactive-text="false"
+          ></el-switch>
+        </template>
+        <template v-else-if="(selectedWidget as selectedType).type === 'rate'">
+          <el-input-number
+            v-model="optionModel.defaultValue"
+            :min="0"
+            :max="optionModel.max"
+            style="width: 100%"
+          >
+          </el-input-number>
+        </template>
+        <template v-else-if="(selectedWidget as selectedType).type === 'color'">
+          <el-color-picker
+            v-model="optionModel.defaultValue"
+          >
+          </el-color-picker>
+        </template>
+        <template v-else>
+          <el-input type="text" v-model="optionModel.defaultValue"></el-input>
+        </template>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'startPlaceholder'">
+      <el-form-item prop="startPlaceholder" label="起始占位内容">
+        <el-input type="text" v-model="optionModel.startPlaceholder"></el-input>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'endPlaceholder'">
+      <el-form-item prop="endPlaceholder" label="截止占位内容">
+        <el-input type="text" v-model="optionModel.endPlaceholder"></el-input>
       </el-form-item>
     </template>
     <template v-if="propName === 'placeholder'">
@@ -43,9 +86,9 @@
         <el-input type="text" v-model="optionModel.placeholder"></el-input>
       </el-form-item>
     </template>
-    <template v-if="propName === 'columnWidth'">
-      <el-form-item prop="columnWidth" label="标签宽度">
-        <el-input type="text" v-model="optionModel.columnWidth"></el-input>
+    <template v-if="propName === 'autoFullWidth'">
+      <el-form-item prop="autoFullWidth" label="自动拉伸宽度">
+        <el-switch v-model="optionModel.autoFullWidth"></el-switch>
       </el-form-item>
     </template>
     <template v-if="propName === 'size'">
@@ -61,6 +104,29 @@
         </el-select>
       </el-form-item>
     </template>
+    <template v-if="propName === 'showStops'">
+      <el-form-item prop="showStops" label="显示间断点">
+        <el-switch v-model="optionModel.showStops"></el-switch>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'displayStyle'">
+      <el-form-item prop="displayStyle" label="显示样式">
+        <el-radio-group v-model="optionModel.displayStyle">
+          <el-radio label="inline">行内</el-radio>
+          <el-radio label="block">块</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'buttonStyle'">
+      <el-form-item prop="buttonStyle" label="显示为按钮">
+        <el-switch v-model="optionModel.buttonStyle"></el-switch>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'border'">
+      <el-form-item prop="border" label="带有边框">
+        <el-switch v-model="optionModel.border"></el-switch>
+      </el-form-item>
+    </template>
     <template v-if="propName === 'labelWidth'">
       <el-form-item prop="labelWidth" label="标签宽度">
         <el-input
@@ -74,6 +140,14 @@
     <template v-if="propName === 'labelHidden'">
       <el-form-item prop="labelHidden" label="隐藏字段标签">
         <el-switch v-model="optionModel.labelHidden"></el-switch>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'rows'">
+      <el-form-item prop="rows" label="行数">
+        <el-input-number
+          v-model="optionModel.rows"
+          style="width: 100%"
+        ></el-input-number>
       </el-form-item>
     </template>
     <template v-if="propName === 'required'">
@@ -120,11 +194,6 @@
         <el-switch v-model="optionModel.disabled"></el-switch>
       </el-form-item>
     </template>
-    <template v-if="propName === 'hidden'">
-      <el-form-item prop="hidden" label="隐藏">
-        <el-switch v-model="optionModel.hidden"></el-switch>
-      </el-form-item>
-    </template>
     <template v-if="propName === 'clearable'">
       <el-form-item prop="clearable" label="可清除">
         <el-switch v-model="optionModel.clearable"></el-switch>
@@ -133,6 +202,46 @@
     <template v-if="propName === 'showPassword'">
       <el-form-item prop="showPassword" label="可显示密码">
         <el-switch v-model="optionModel.showPassword"></el-switch>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'format'">
+      <el-form-item prop="format" label="显示格式">
+        <template
+          v-if="(selectedWidget as selectedType).type === 'date' || 'date-range'"
+        >
+          <el-select v-model="optionModel.format" filterable allow-create>
+            <el-option label="YYYY-MM-DD" value="YYYY-MM-DD"></el-option>
+            <el-option label="YYYY/MM/DD" value="YYYY/MM/DD"></el-option>
+            <el-option
+              label="YYYY年MM月DD日"
+              value="YYYY年MM月DD日"
+            ></el-option>
+            <el-option
+              label="YYYY-MM-DD HH:mm:ss"
+              value="YYYY-MM-DD HH:mm:ss"
+            ></el-option>
+            <el-option
+              label="YYYY-MM-DD hh:mm:ss"
+              value="YYYY-MM-DD hh:mm:ss"
+            ></el-option>
+          </el-select>
+        </template>
+        <template v-else>
+          <el-select v-model="optionModel.format" filterable allow-create>
+            <el-option label="HH:mm:ss" value="HH:mm:ss"></el-option>
+            <el-option label="HH时mm分ss秒" value="HH时mm分ss秒"></el-option>
+            <el-option label="hh:mm:ss" value="hh:mm:ss"></el-option>
+          </el-select>
+        </template>
+      </el-form-item>
+    </template>
+    <template v-if="propName === 'optionItems'">
+      <el-form-item label-width="0">
+        <el-divider class="custom-divider-margin-top">选项设置</el-divider>
+        <OptionItemsSetting
+          :designer="designer"
+          :selected-widget="designer.selectedWidget"
+        ></OptionItemsSetting>
       </el-form-item>
     </template>
     <template v-if="propName === 'customClass'">
@@ -158,7 +267,16 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-defineProps(["editorName", "propName", "optionModel"]);
+import { designerType, selectedType, fieldType } from "@/components/api/type";
+import OptionItemsSetting from "./option-items-setting.vue";
+
+defineProps<{
+  designer: designerType;
+  selectedWidget: selectedType | null;
+  editorName: String;
+  propName: String | number;
+  optionModel: fieldType;
+}>();
 
 const nameRequiredRule = ref({ required: true, message: "name required" });
 
@@ -187,7 +305,7 @@ const fieldValidators = ref([
   { value: "chinese", label: "仅中文字符" },
 ]);
 
-const cssClassList = ref([])
+const cssClassList = ref([]);
 </script>
 
 <style scoped lang="scss"></style>

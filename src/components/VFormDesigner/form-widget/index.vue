@@ -1,5 +1,5 @@
 <template>
-  <el-form>
+  <el-form label-position="right" label-width="100px">
     <div class="form-widget-list">
       <draggable
         :list="designer.widgetList"
@@ -32,11 +32,12 @@
 // import { ref } from "vue";
 import FormItemWrapper from "./field-widget/form-item-wrapper.vue";
 
-defineProps(['designer']);
+defineProps(["designer"]);
 
 // const componentList = ref([]);
 
 function getWidgetName(widget: any) {
+  console.log("widgetName", widget.type + "-widget");
   return widget.type + "-widget";
 }
 </script>

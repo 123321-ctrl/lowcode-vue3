@@ -55,6 +55,7 @@
 import widgetPanel from "./widget-panel/index.vue";
 import VFormWidget from "./form-widget/index.vue";
 import SettingPanel from "./setting-panel/index.vue";
+import { designerType } from "@/components/api/type";
 import { addWindowResizeHandler } from "@/utils/util.js";
 import { ref, provide, onMounted, nextTick } from "vue";
 
@@ -66,7 +67,7 @@ const prop = defineProps({
   },
 });
 
-const designer = ref({
+const designer = ref<designerType>({
   widgetList: [],
   selectedWidget: null,
   setSelected: setSelected,
